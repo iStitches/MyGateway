@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/gateway-core/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway-config-center/gateway-config-center-nacos-impl/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway-config-center/gateway-config-center-api/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway-registry-center/gateway-register-center-nacos-impl/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway-registry-center/gateway-register-center-api/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/backend-dubbo-server/pom.xml" />
+        <option value="$PROJECT_DIR$/backend-http-server/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="19" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

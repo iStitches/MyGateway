@@ -1,0 +1,5 @@
+org.xjx.gateway.filter.loadbalance.LoadBalanceFilter
+org.xjx.gateway.filter.router.RouterFilter
+org.xjx.gateway.filter.flow.FlowControlFilter
+org.xjx.gateway.filter.auth.AuthFilter
+org.xjx.gateway.filter.gray.GrayFilter

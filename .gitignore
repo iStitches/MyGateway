@@ -1,0 +1,11 @@
+# Project exclude paths
+/gateway-client/target/
+/gateway-common/target/
+/gateway-config-center/gateway-config-center-api/target/
+/gateway-config-center/gateway-config-center-nacos-impl/target/
+/gateway-core/target/
+/gateway-dubbo/target/
+/gateway-http/target/
+/gateway-registry-center/gateway-register-center-api/target/
+/gateway-registry-center/gateway-register-center-nacos-impl/target/
+/logs/

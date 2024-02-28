@@ -1,0 +1,6 @@
+server:
+  port: 9999
+api:
+  registerAddress: 192.168.220.1:8848
+  env: dev
+  gray: false
