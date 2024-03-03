@@ -7,6 +7,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.junit.Test;
+import org.xjx.common.utils.cipher.AESUtil;
+import org.xjx.common.utils.cipher.RSAUtil;
+import org.xjx.common.utils.redis.JedisUtil;
 
 import java.util.Date;
 
@@ -33,5 +36,24 @@ public class AppTest
 
         String subject = ((DefaultClaims)jwt.getBody()).getSubject();
         System.out.println(subject);
+    }
+
+    @Test
+    public void redisTest() {
+        JedisUtil jedisUtil = new JedisUtil();
+        jedisUtil.setString("test", "aaa");
+    }
+
+    @Test
+    public void testRSA() {
+        RSAUtil.KeyPairInfo keyPair = RSAUtil.getKeyPair();
+        // Replace with your symmetric key
+        String symmetricKey = "zhangjinbiao6666";
+
+        String encryptSymmetric = RSAUtil.encryptPublicKey(symmetricKey, keyPair.getPublicKey());
+        System.out.println("EncryptSymmetric："+encryptSymmetric);
+
+        String decryptKey = RSAUtil.decryptPrivateKey(encryptSymmetric, keyPair.getPrivateKey());
+        System.out.println(symmetricKey.equals(decryptKey));
     }
 }

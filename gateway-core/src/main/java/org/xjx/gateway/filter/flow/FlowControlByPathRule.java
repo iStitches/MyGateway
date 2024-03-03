@@ -6,7 +6,7 @@ import org.xjx.common.config.Rule;
 import org.xjx.common.constants.FilterConst;
 import org.xjx.common.enums.ResponseCode;
 import org.xjx.common.exception.LimitedException;
-import org.xjx.gateway.util.JedisUtil;
+import org.xjx.common.utils.redis.JedisUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

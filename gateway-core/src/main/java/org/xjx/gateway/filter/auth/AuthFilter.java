@@ -11,6 +11,7 @@ import org.xjx.common.config.Rule;
 import org.xjx.common.constants.FilterConst;
 import org.xjx.common.enums.ResponseCode;
 import org.xjx.common.exception.ResponseException;
+import org.xjx.common.utils.jwt.JWTUtil;
 import org.xjx.gateway.context.GatewayContext;
 import org.xjx.gateway.filter.Filter;
 import org.xjx.gateway.filter.FilterAspect;
@@ -46,7 +47,7 @@ public class AuthFilter implements Filter {
             }
             // jwt认证并解析载荷——UserId
             try {
-                long userId = parseUserId(token);
+                long userId = (Long) JWTUtil.getClaimByToken(token, FilterConst.TOKEN_SECRET).get(FilterConst.TOKEN_USERID_KEY);
                 ctx.getRequest().setUserId(userId);
                 log.info("AuthFilter parse token successful, userId {}", userId);
             } catch (Exception e) {

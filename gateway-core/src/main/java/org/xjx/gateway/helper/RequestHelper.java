@@ -91,7 +91,11 @@ public class RequestHelper {
      */
     private static Rule getRule(GatewayRequest request, String serviceId) {
         // 拼接服务ID+请求路径
-        String key = serviceId + "." + request.getPath();
+        String encryptRequestPath = request.getPath();
+        if (encryptRequestPath.indexOf("/encrypt") != -1) {
+            encryptRequestPath = encryptRequestPath.substring(0, encryptRequestPath.indexOf("/encrypt"));
+        }
+        String key = serviceId + "." + encryptRequestPath;
         Rule rule = DynamicConfigManager.getInstance().getRulePath(key);
         if (rule != null) {
             return rule;

@@ -70,7 +70,8 @@ public class GatewayRequest implements IGatewayRequest{
      * 统一资源标识符
      */
     @Getter
-    private final String uri;
+    @Setter
+    private String uri;
     /**
      * 请求方式
      */
@@ -93,7 +94,10 @@ public class GatewayRequest implements IGatewayRequest{
      * 请求参数解析器
      */
     @Getter
-    private final QueryStringDecoder queryStringDecoder;
+    private QueryStringDecoder queryStringDecoder;
+    public void setQueryStringDecoder(String uri) {
+        this.queryStringDecoder = new QueryStringDecoder(uri, charset);
+    }
     /**
      * 完整Http请求
      */

@@ -161,7 +161,6 @@ public class RouterFilter implements Filter {
         @Override
         protected Object getFallback() {
             // 是否是超时引发的熔断
-            Throwable throwable = getExecutionException();
             if (isFailedExecution() || getExecutionException() instanceof HystrixTimeoutException) {
                 // 针对超时的异常处理
                 context.setResponse(GatewayResponse.buildGatewayResponse(ResponseCode.GATEWAY_FALLBACK_TIMEOUT));
@@ -170,7 +169,7 @@ public class RouterFilter implements Filter {
                 context.setResponse(GatewayResponse.buildGatewayResponse(ResponseCode.GATEWAY_FALLBACK_ERROR, config.get().getFallbackResponse()));
             }
             context.setContextStatus(ContextStatus.Written);
-            throw new RuntimeException("hystrix fallback");
+            return null;
         }
 
         /**

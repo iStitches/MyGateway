@@ -1,4 +1,4 @@
-package org.xjx.gateway.util;
+package org.xjx.common.utils.redis;
 
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
@@ -15,6 +15,15 @@ public class JedisUtil {
     private final String SET_IF_NOT_EXISTS = "NX";
     private final String SET_WITH_EXPIRE_TIME = "PX";
     private JedisPoolUtil jedisPool = new JedisPoolUtil();
+
+    public boolean isExist(String key) {
+        try {
+            Jedis jedis = jedisPool.getJedis();
+            return jedis.exists(key);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     public boolean setString(String key, String value) {
         Jedis jedis = jedisPool.getJedis();
@@ -87,6 +96,19 @@ public class JedisUtil {
             return true;
         } catch (Exception e) {
             log.debug("setHash key {} throws:{}", key,e.getMessage());
+            return false;
+        } finally {
+            close(jedis);
+        }
+    }
+
+    public boolean setExpire(String key, int seconds) {
+        Jedis jedis = jedisPool.getJedis();
+        try {
+            jedis.expire(key, seconds);
+            return true;
+        } catch (Exception e) {
+            log.error("setExpire for key {} throws:{}", key, e.getMessage());
             return false;
         } finally {
             close(jedis);
@@ -223,6 +245,34 @@ public class JedisUtil {
             close(jedis);
         }
         return null;
+    }
+
+    public Double getScore(String key, String mKey) {
+        Jedis jedis = jedisPool.getJedis();
+        try {
+            return jedis.zscore(key, mKey);
+        } catch (Exception e) {
+            log.error("getScore() key{} mKey{} throws:{}", key, mKey, e.getMessage());
+        } finally {
+            close(jedis);
+        }
+        return null;
+    }
+
+    public Boolean isExistScoreSet(String key, String mKey) {
+        Jedis jedis = jedisPool.getJedis();
+        try {
+            if (jedis.zrank(key, mKey) == null) {
+                return false;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("isExistScoreSet() key{} mKey{} throws:{}", key, mKey, e.getMessage());
+        } finally {
+            close(jedis);
+        }
+        return false;
     }
 
     /**

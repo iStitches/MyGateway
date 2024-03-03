@@ -1,7 +1,7 @@
 package org.xjx.gateway.filter.flow;
 
 import lombok.extern.slf4j.Slf4j;
-import org.xjx.gateway.util.JedisUtil;
+import org.xjx.common.utils.redis.JedisUtil;
 
 /**
  *  Redis 分布式限流工具类

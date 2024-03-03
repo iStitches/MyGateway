@@ -1,9 +1,11 @@
-package org.xjx.gateway.util;
+package org.xjx.common.utils.redis;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ObjectUtils;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -32,7 +34,7 @@ public class JedisPoolUtil {
 
         public Jedis getResource() {
             Jedis jedis = jedisPool.getResource();
-            jedis.auth(password);
+            //jedis.auth(password);
             return jedis;
         }
     }
@@ -57,8 +59,12 @@ public class JedisPoolUtil {
     private void initialConfig() {
         try {
             Properties prop = new Properties();
-            // 加载解析配置文件
-            prop.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("gateway.properties"));
+            InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("gateway.properties");
+            if (ObjectUtils.isEmpty(inputStream)) {
+                throw new RuntimeException("InputStream load null, filePath: gateway.properties");
+            }
+            // 加载解析配置文件（当前线程会有问题，用类加载器加载文件）
+            prop.load(inputStream);
             host = prop.getProperty("redis.host");
             port = Integer.parseInt(prop.getProperty("redis.port"));
             maxTotal = Integer.parseInt(prop.getProperty("redis.maxTotal"));
@@ -76,7 +82,6 @@ public class JedisPoolUtil {
     private void initialPool() {
         if (lock.tryLock()) {
             try {
-                lock.lock();
                 initialConfig();
                 JedisPoolConfig config = new JedisPoolConfig();
                 config.setMaxIdle(maxIdle);
