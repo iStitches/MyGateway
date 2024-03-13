@@ -11,10 +11,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * 限流过滤器
- * 1.判断限流类型（服务/请求路径？）；
- * 2.根据限流规则选择限流算法；
- * 3.执行过滤逻辑
+ * 限流过滤器：
+ * 1.支持动态选择限流算法，实现不同服务不同限流方式；
+ * 2.支持动态调整限流配置，从配置中心更新限流相关参数；
+ * 3.支持按路径/服务实现限流；
+ * 4.支持分布式/单机限流；
  */
 @Slf4j
 @FilterAspect(id = FilterConst.FLOW_CTL_FILTER_ID, name = FilterConst.FLOW_CTL_FILTER_NAME, order = FilterConst.FLOW_CTL_FILTER_ORDER)

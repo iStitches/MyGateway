@@ -19,7 +19,7 @@ public class FlowControlByPathRule implements FlowControlRule {
     private String serviceId;
     // 服务路径
     private String path;
-    // Redis限流器
+    // 默认使用Redis限流器
     private RedisCountLimiter redisCountLimiter;
 
     private static final String LIMIT_MESSAGE = "too many requests, try again later";
