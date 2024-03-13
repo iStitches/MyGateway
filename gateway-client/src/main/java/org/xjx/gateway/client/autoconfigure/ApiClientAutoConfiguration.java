@@ -14,7 +14,6 @@ import org.xjx.gateway.client.api.ApiProperties;
 import org.xjx.gateway.client.manager.DubboClientRegisterManager;
 import org.xjx.gateway.client.manager.SpringMVCClientRegisterManager;
 
-import javax.servlet.Servlet;
 
 /**
  * 核心配置类
@@ -28,7 +27,7 @@ public class ApiClientAutoConfiguration {
     private ApiProperties apiProperties;
 
     @Bean
-    @ConditionalOnClass({Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class})
+    @ConditionalOnClass({DispatcherServlet.class, WebMvcConfigurer.class})
     @ConditionalOnMissingBean(SpringMVCClientRegisterManager.class)
     public SpringMVCClientRegisterManager springMVCClientRegisterManager() {
         return new SpringMVCClientRegisterManager(apiProperties);

@@ -1,6 +1,40 @@
 server:
-  port: 9999
+  port: 9998
 api:
   registerAddress: 192.168.220.1:8848
   env: dev
   gray: false
+spring:
+  application:
+    name: index12306-user${unique-name:}-service
+  datasource:
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:shardingsphere-config.yaml
+  redis:
+    port: 6379
+    host: 139.159.147.192
+#    password: xjx123456
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+framework:
+  fastjson:
+    safa-mode: true
+  cache:
+    redis:
+      value-timeout: 50000
+      bloom-filter:
+        user-register:
+          name: user_register_cache_penetration_bloom_filter${unique-name:}
+        default:
+          name: user_register_cache_penetration_bloom_filter${unique-name:}
+          expectedInsertions: 64000
+          falseProbability: 0.03
