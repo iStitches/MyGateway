@@ -2,6 +2,8 @@ package org.xjx.gateway;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.xjx.common.config.DynamicConfigManager;
 import org.xjx.common.config.ServiceDefinition;
 import org.xjx.common.config.ServiceInstance;
@@ -12,50 +14,62 @@ import org.xjx.gateway.config.center.api.ConfigCenter;
 import org.xjx.gateway.register.center.api.RegisterCenter;
 import org.xjx.gateway.register.center.api.RegisterCenterListener;
 
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 /**
  *  网关启动类
  */
 @Slf4j
+@SpringBootApplication
 public class Bootstrap {
-    public static void main(String[] args) {
-        // 加载网关静态核心配置
-        Config config = ConfigLoader.getInstance().load(args);
 
-        // 网关配置、服务信息初始化
-        // 连接配置中心、监听配置中心的增删改查操作
-        ServiceLoader<ConfigCenter> serviceLoader = ServiceLoader.load(ConfigCenter.class);
-        final ConfigCenter configCenter = serviceLoader.findFirst().orElseThrow(() -> {
-            log.error("can't found ConfigCenter impl");
-            return new RuntimeException("can't found ConfigCenter impl");
-        });
-
-        // 监听配置中心数据变化、修改
-        configCenter.init(config.getRegistryAddress(), config.getEnv());
-        configCenter.subscribeRulesChange(rules -> {
-            DynamicConfigManager.getInstance().putAllRule(rules);
-        });
-
-        // Netty组件创建及启动
-        Container container = new Container(config);
-        container.start();
-
-        // 连接注册中心，加载注册中心实例到本地
-        final RegisterCenter registerCenter = registerAndSubscribe(config);
-
-        // 收到 kill 信号时触发，服务停机
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                registerCenter.deregister(buildGatewayServiceDefinition(config),
-                        buildGatewayServiceInstance(config));
-                container.shutdown();
-            }
-        });
+    @PostConstruct
+    void setDefaultTimeZone() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
     }
+
+    public static void main(String[] args) {
+        SpringApplication.run(Bootstrap.class, args);
+        log.info("启动 MyGateway 成功...");
+    }
+
+
+//    private static void init() {
+//        // 加载网关静态核心配置
+//        Config config = ConfigLoader.getInstance().load(args);
+//
+//        // 网关配置、服务信息初始化
+//        // 连接配置中心、监听配置中心的增删改查操作
+//        ServiceLoader<ConfigCenter> serviceLoader = ServiceLoader.load(ConfigCenter.class);
+//        final ConfigCenter configCenter = serviceLoader.findFirst().orElseThrow(() -> {
+//            log.error("can't found ConfigCenter impl");
+//            return new RuntimeException("can't found ConfigCenter impl");
+//        });
+//
+//        // 监听配置中心数据变化、修改
+//        configCenter.init(config.getRegistryAddress(), config.getEnv());
+//        configCenter.subscribeRulesChange(rules -> {
+//            DynamicConfigManager.getInstance().putAllRule(rules);
+//        });
+//
+//        // Netty组件创建及启动
+//        Container container = new Container(config);
+//        container.start();
+//
+//        // 连接注册中心，加载注册中心实例到本地
+//        final RegisterCenter registerCenter = registerAndSubscribe(config);
+//
+//        // 收到 kill 信号时触发，服务停机
+//        Runtime.getRuntime().addShutdownHook(new Thread(){
+//            @Override
+//            public void run() {
+//                registerCenter.deregister(buildGatewayServiceDefinition(config),
+//                        buildGatewayServiceInstance(config));
+//                container.shutdown();
+//            }
+//        });
+//    }
 
     /**
      * 服务注册和订阅服务变更信息通知, spi 方式实现服务注册
