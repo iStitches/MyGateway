@@ -25,12 +25,25 @@ public class RequestHelper {
     public static GatewayContext doContext(FullHttpRequest request, ChannelHandlerContext context) {
         // 封装网关内部请求对象
         GatewayRequest gatewayRequest = doRequest(request, context);
-        // 根据请求id获取请求服务定义信息
-        ServiceDefinition definition = DynamicConfigManager.getInstance().getServiceDefinition(gatewayRequest.getUniqueId());
+
+        // 路由匹配，先查找 Map，未找到再查找前缀树
+        ServiceDefinition definition = null;
+        definition = DynamicConfigManager.getInstance().getServiceDefinition(gatewayRequest.getUniqueId());
+        if (definition == null) {
+            ServiceRuleDTO serviceRule = DynamicConfigManager.getInstance().getServiceRule(gatewayRequest.getPath());
+            if (serviceRule != null) {
+                definition = DynamicConfigManager.getInstance().getServiceDefinition(serviceRule.getServiceName());
+            }
+        }
+        if(definition == null) {
+            throw new RuntimeException("未发现目标服务");
+        }
+
         // 服务调用对象初始化
         ServiceInvoker serviceInvoker = new HttpServiceInvoker();
         serviceInvoker.setInvokerPath(gatewayRequest.getPath());
         serviceInvoker.setTimeOut(500);
+
         // 获取具体服务对象访问规则
         Rule rule = getRule(gatewayRequest, definition.getServiceId());
         // 动态服务发现
